@@ -1,4 +1,8 @@
-
+import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import {useHttp} from '../../hooks/http.hook';
+import { useDispatch, useSelector } from 'react-redux';
+import { heroCreated, filtersFetched} from '../../actions/index';
 
 // Задача для этого компонента:
 // Реализовать создание нового героя с введенными данными. Он должен попадать
@@ -11,28 +15,78 @@
 // данных из фильтров
 
 const HeroesAddForm = () => {
+
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [element, setElement] = useState('');
+
+    const dispatch = useDispatch();
+    const { request } = useHttp();
+    const filters = useSelector(state => state.filters);
+
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+
+        const newHero = {
+            id: uuidv4(),
+            name,
+            description,
+            element
+        }
+
+        request('http://localhost:3001/heroes', 'POST', JSON.stringify(newHero))
+            .then(() => {
+                dispatch(heroCreated(newHero));
+                setName('');
+                setDescription('');
+                setElement('');
+            })
+            .catch(err => console.log(err))    
+    }
+
+    useEffect(() => {
+        request('http://localhost:3001/filters')
+            .then(data => dispatch(filtersFetched(data)))
+            .catch(err => console.log(err));
+    }, [])
+
+
+    const renderFilters = (arr) => {
+        return arr
+            .filter(item => item !== 'all')
+            .map(item => (
+                <option key={item} value={item}>
+                    {item}
+                </option>
+        ))
+    }
+
     return (
-        <form className="border p-4 shadow-lg rounded">
+        <form onSubmit={onSubmitHandler} className="border p-4 shadow-lg rounded">
             <div className="mb-3">
                 <label htmlFor="name" className="form-label fs-4">Имя нового героя</label>
                 <input 
                     required
-                    type="text" 
-                    name="name" 
+                    type="text"
+                    name="text" 
                     className="form-control" 
                     id="name" 
-                    placeholder="Как меня зовут?"/>
+                    placeholder="Как меня зовут?"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}/>
             </div>
 
             <div className="mb-3">
                 <label htmlFor="text" className="form-label fs-4">Описание</label>
                 <textarea
                     required
-                    name="text" 
+                    name="description" 
                     className="form-control" 
                     id="text" 
                     placeholder="Что я умею?"
-                    style={{"height": '130px'}}/>
+                    style={{"height": '130px'}}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}/>
             </div>
 
             <div className="mb-3">
@@ -41,12 +95,11 @@ const HeroesAddForm = () => {
                     required
                     className="form-select" 
                     id="element" 
-                    name="element">
-                    <option >Я владею элементом...</option>
-                    <option value="fire">Огонь</option>
-                    <option value="water">Вода</option>
-                    <option value="wind">Ветер</option>
-                    <option value="earth">Земля</option>
+                    name="element"
+                    value={element}
+                    onChange={(e) => setElement(e.target.value)}>
+                    <option value=''>Я владею элементом...</option>
+                    {renderFilters(filters)}
                 </select>
             </div>
 
