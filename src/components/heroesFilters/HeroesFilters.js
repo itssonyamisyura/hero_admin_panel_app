@@ -9,8 +9,9 @@ import { activeFilterChanged } from '../../actions';
 // Представьте, что вы попросили бэкенд-разработчика об этом
 
 const HeroesFilters = () => {
-    const filters = useSelector(state => state.filters);
-    const activeFilter = useSelector(state => state.activeFilter);
+    const filters = useSelector(state => state.filters.filters);
+
+    const activeFilter = useSelector(state => state.filters.activeFilter);
     const dispatch = useDispatch();
 
     const renderFilters = (arr) => {

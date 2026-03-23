@@ -22,7 +22,7 @@ const HeroesAddForm = () => {
 
     const dispatch = useDispatch();
     const { request } = useHttp();
-    const filters = useSelector(state => state.filters);
+    const filters = useSelector(state => state.filters.filters);
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
