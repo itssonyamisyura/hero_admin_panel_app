@@ -1,3 +1,9 @@
+export const fetchHeroes = (request) => (dispatch) => {
+    dispatch(heroesFetching());
+    request("http://localhost:3001/heroes")
+        .then(data => dispatch(heroesFetched(data)))
+        .catch(() => dispatch(heroesFetchingError()))
+}
 
 export const heroesFetching = () => {
     return {
@@ -51,3 +57,12 @@ export const activeFilterChanged = (filter) => {
         payload: filter
     }
 }
+
+// export const activeFilterChanged = (filter) => (dispatch) => {
+//     setTimeout(() => {
+//         dispatch({
+//             type: 'ACTIVE_FILTER_CHANGED',
+//             payload: filter
+//         })
+//     }, 500);
+// } // return func которая запустит dispatch in 1 sec
