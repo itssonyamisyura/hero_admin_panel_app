@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {useHttp} from '../../hooks/http.hook';
 import { useDispatch, useSelector } from 'react-redux';
-import { filtersFetched} from '../heroesList/filtersSlice';
+import { fetchFilters } from '../heroesList/filtersSlice';
 import { heroCreated } from '../heroesList/heroesSlice';
 
 // Задача для этого компонента:
@@ -46,10 +46,8 @@ const HeroesAddForm = () => {
     }
 
     useEffect(() => {
-        request('http://localhost:3001/filters')
-            .then(data => dispatch(filtersFetched(data)))
-            .catch(err => console.log(err));
-    }, [])
+        dispatch(fetchFilters())
+    }, [dispatch])
 
 
     const renderFilters = (arr) => {
@@ -69,7 +67,7 @@ const HeroesAddForm = () => {
                 <input 
                     required
                     type="text"
-                    name="text" 
+                    name="name" 
                     className="form-control" 
                     id="name" 
                     placeholder="Как меня зовут?"
