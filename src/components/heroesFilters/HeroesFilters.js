@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { activeFilterChanged } from '../../actions';
+import { activeFilterChanged } from '../heroesList/filtersSlice';
 
 // Задача для этого компонента:
 // Фильтры должны формироваться на основании загруженных данных

@@ -42,7 +42,7 @@ const HeroesListItem = ({ name, description, element, id, onDelete }) => {
 				></button>
 			</span>
 		</li>
-	);
+	); 
 };
 
 export default HeroesListItem;
