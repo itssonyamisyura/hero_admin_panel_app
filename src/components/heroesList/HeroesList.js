@@ -1,17 +1,13 @@
 import {useHttp} from '../../hooks/http.hook';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { heroDeleted, heroDeleteError, fetchHeroes} from './heroesSlice';
+import { heroDeleted, heroDeleteError, fetchHeroes, selectAll } from './heroesSlice';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
-// Задача для этого компонента:
-// При клике на "крестик" идет удаление персонажа из общего состояния
-// Усложненная задача:
-// Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
-    const heroes = useSelector(state => state.heroes.heroes);
+    const heroes = useSelector(selectAll);
     const activeFilter = useSelector(state => state.filters.activeFilter);
     const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
 
