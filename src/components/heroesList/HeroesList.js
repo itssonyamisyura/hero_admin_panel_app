@@ -1,33 +1,32 @@
-import {useHttp} from '../../hooks/http.hook';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { heroDeleted, heroDeleteError, fetchHeroes, selectAll } from './heroesSlice';
+import { useSelector } from 'react-redux';
+import { useGetHeroesQuery, useDeleteHeroMutation } from '../../api/apiSlice';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
 
 const HeroesList = () => {
-    const heroes = useSelector(selectAll);
+    const {
+        data: heroes = [],
+        // isFetching, next requests
+        isLoading, // first request
+        isError,
+    } = useGetHeroesQuery();
+
     const activeFilter = useSelector(state => state.filters.activeFilter);
-    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
+    
+    const [deleteHero] = useDeleteHeroMutation();
 
-    const dispatch = useDispatch();
-    const {request} = useHttp();
-
-    useEffect(() => {
-        dispatch(fetchHeroes());
-        // eslint-disable-next-line
-    }, []);
-
-    const onDelete = (id) => {
-        request(`http://localhost:3001/heroes/${id}`, 'DELETE')
-            .then(() => dispatch(heroDeleted(id)))
-            .catch(() => dispatch(heroDeleteError()))
+    const onDelete = async (id) => {
+        try {
+            await deleteHero(id).unwrap();
+        } catch (err) {
+            console.log(err);
+        }
     }
 
-    if (heroesLoadingStatus === "loading") {
+    if (isLoading) {
         return <Spinner/>;
-    } else if (heroesLoadingStatus === "error") {
+    } else if (isError) {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 
